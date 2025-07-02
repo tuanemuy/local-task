@@ -1,6 +1,7 @@
 import { eq, and } from "drizzle-orm";
 import { schema } from "../db";
 import type { DatabaseConnection } from "../utils/db";
+import { validateTaskId, handleCommandError } from "../utils/validation";
 
 export async function remove(
   dbConnection: DatabaseConnection,
@@ -10,17 +11,7 @@ export async function remove(
   const { db } = dbConnection;
 
   try {
-    // Validate ID format
-    if (!id || id.trim() === "" || !/^\d+$/.test(id)) {
-      console.error("Invalid task ID");
-      throw new Error("Invalid task ID");
-    }
-
-    const taskId = Number.parseInt(id, 10);
-    if (Number.isNaN(taskId) || taskId <= 0) {
-      console.error("Invalid task ID");
-      throw new Error("Invalid task ID");
-    }
+    const taskId = validateTaskId(id);
 
     const result = await db
       .delete(schema.tasks)
@@ -35,7 +26,6 @@ export async function remove(
 
     console.log(`Task ${id} removed successfully`);
   } catch (error) {
-    console.error("Failed to remove task:", error);
-    throw error;
+    handleCommandError("remove task", error);
   }
 }

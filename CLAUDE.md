@@ -39,11 +39,6 @@ Run `pnpm typecheck` , `pnpm run lint:fix` and `pnpm run format` after making ch
 - **Database**: SQLite with Drizzle ORM
 - **Validation**: Zod 4 （ import { z } from "zod/v4"; is valid for zod@^3）
 
-### Project Structure
-
-- `src/index.ts` - Main entry point and CLI logic
-- `tests/` - Test files using Vitest
-
 ### Key Patterns
 
 - ESM-first with strict TypeScript configuration

@@ -7,3 +7,4 @@ export { done } from "./done";
 export { wip } from "./wip";
 export { remove } from "./remove";
 export { show } from "./show";
+export { init, initForce } from "./init";

@@ -31,6 +31,13 @@ export function getDb(): {
   sqlite: Database.Database;
 } {
   const dbPath = getDbPath();
+
+  if (!existsSync(dbPath)) {
+    console.error(`Database not found at: ${dbPath}`);
+    console.error("Please run 'local-task init' to initialize the database.");
+    process.exit(1);
+  }
+
   return createDatabase(dbPath);
 }
 

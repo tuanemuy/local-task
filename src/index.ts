@@ -11,6 +11,22 @@ async function main() {
   }
 
   const [command, ...params] = args;
+
+  // Handle init command separately (doesn't require database connection)
+  if (command === "init") {
+    try {
+      if (params.includes("--force")) {
+        await commands.initForce();
+      } else {
+        await commands.init();
+      }
+    } catch (error) {
+      console.error("Initialization failed:", error);
+      process.exit(1);
+    }
+    return;
+  }
+
   const dbConnection = getDb();
 
   try {
@@ -117,6 +133,7 @@ Usage:
   local-task <command> [arguments]
 
 Commands:
+  init [--force]                   Initialize the database (required before first use)
   add <category> <jsonArray>       Upsert tasks to a category
   get <category> <id|customId>     Get a specific task
   search <category> <query>        Search tasks by customId, name, or description
@@ -128,6 +145,7 @@ Commands:
   show <category>                  Display tasks in table format
 
 Examples:
+  local-task init                  # Initialize database
   local-task add "backend" '[{"customId": "api-001", "name": "Create API" }]'
   local-task get "backend" "api-001"
   local-task search "backend" "API"

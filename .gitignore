@@ -6,6 +6,3 @@ dist
 .eslintcache
 
 .direnv
-
-# Test databases
-test-data/

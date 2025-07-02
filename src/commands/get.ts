@@ -10,10 +10,10 @@ export async function get(
   const { db } = dbConnection;
 
   try {
-    // Try to parse as number for id (only non-negative integers are considered valid IDs)
+    // Try to parse as number for id (only positive integers are considered valid IDs)
     const id = Number.parseInt(idOrCustomId, 10);
     const isValidNumericId =
-      !Number.isNaN(id) && id >= 0 && /^\d+$/.test(idOrCustomId);
+      !Number.isNaN(id) && id > 0 && /^\d+$/.test(idOrCustomId);
 
     const task = await db
       .select()

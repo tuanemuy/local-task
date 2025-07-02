@@ -1,6 +1,7 @@
 import { eq, and } from "drizzle-orm";
 import { schema } from "../db";
 import type { DatabaseConnection } from "../utils/db";
+import { validateTaskId, handleCommandError } from "../utils/validation";
 
 export async function wip(
   dbConnection: DatabaseConnection,
@@ -11,17 +12,7 @@ export async function wip(
   const { db } = dbConnection;
 
   try {
-    // Validate ID format
-    if (!id || id.trim() === "" || !/^\d+$/.test(id)) {
-      console.error("Invalid task ID");
-      throw new Error("Invalid task ID");
-    }
-
-    const taskId = Number.parseInt(id, 10);
-    if (Number.isNaN(taskId) || taskId <= 0) {
-      console.error("Invalid task ID");
-      throw new Error("Invalid task ID");
-    }
+    const taskId = validateTaskId(id);
 
     const result = await db
       .update(schema.tasks)
@@ -40,7 +31,6 @@ export async function wip(
 
     console.log(`Task ${id} marked as work in progress`);
   } catch (error) {
-    console.error("Failed to mark task as wip:", error);
-    throw error;
+    handleCommandError("mark task as wip", error);
   }
 }

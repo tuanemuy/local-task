@@ -15,7 +15,8 @@
   "author": "maku.",
   "packageManager": "pnpm@10.12.4",
   "files": [
-    "dist"
+    "dist",
+    "drizzle"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",

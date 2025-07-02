@@ -13,6 +13,7 @@
     "url": "git+https://github.com/tuanemuy/local-task.git"
   },
   "author": "maku.",
+  "packageManager": "pnpm@10.12.4",
   "files": ["dist"],
   "main": "./dist/index.js",
   "module": "./dist/index.js",

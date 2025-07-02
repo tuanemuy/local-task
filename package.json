@@ -1,6 +1,6 @@
 {
   "name": "local-task",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A task manager for npm projects",
   "type": "module",
   "license": "MIT",

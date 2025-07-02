@@ -14,7 +14,9 @@
   },
   "author": "maku.",
   "packageManager": "pnpm@10.12.4",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -39,6 +41,7 @@
     "prepublishOnly": "pnpm run build"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.0.0",
     "@libsql/client": "^0.15.9",
     "@types/node": "^22.15.17",
     "bumpp": "^10.1.0",

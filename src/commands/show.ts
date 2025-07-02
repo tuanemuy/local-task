@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { schema } from "../db";
 import type { DatabaseConnection } from "../utils/db";
+import { stringWidth, truncateString, padEnd } from "../utils/string-width";
 
 export async function show(dbConnection: DatabaseConnection, category: string) {
   const { db } = dbConnection;
@@ -16,27 +17,55 @@ export async function show(dbConnection: DatabaseConnection, category: string) {
       return;
     }
 
-    // Calculate column widths
+    // Get terminal width (default to 120 if not available)
+    const terminalWidth = process.stdout.columns || 120;
+
+    // Define maximum widths for each column
+    const maxColWidths = {
+      id: 6,
+      customId: 15,
+      name: 20,
+      description: Math.max(20, Math.floor(terminalWidth * 0.3)),
+      status: 10,
+      comment: Math.max(15, Math.floor(terminalWidth * 0.2)),
+    };
+
+    // Calculate column widths based on actual content (respecting max widths)
     const cols = {
-      id: Math.max(2, ...tasks.map((t) => t.id.toString().length)),
-      customId: Math.max(8, ...tasks.map((t) => (t.customId || "").length)),
-      name: Math.max(4, ...tasks.map((t) => (t.name || "").length)),
-      description: Math.max(
-        11,
-        ...tasks.map((t) => (t.description || "").length),
+      id: Math.min(
+        maxColWidths.id,
+        Math.max(2, ...tasks.map((t) => stringWidth(t.id.toString()))),
       ),
-      status: 6,
-      comment: Math.max(7, ...tasks.map((t) => (t.comment || "").length)),
+      customId: Math.min(
+        maxColWidths.customId,
+        Math.max(8, ...tasks.map((t) => stringWidth(t.customId || ""))),
+      ),
+      name: Math.min(
+        maxColWidths.name,
+        Math.max(4, ...tasks.map((t) => stringWidth(t.name || ""))),
+      ),
+      description: Math.min(
+        maxColWidths.description,
+        Math.max(11, ...tasks.map((t) => stringWidth(t.description || ""))),
+      ),
+      status: Math.min(
+        maxColWidths.status,
+        Math.max(6, ...tasks.map((t) => stringWidth(t.status || ""))),
+      ),
+      comment: Math.min(
+        maxColWidths.comment,
+        Math.max(7, ...tasks.map((t) => stringWidth(t.comment || ""))),
+      ),
     };
 
     // Header
     console.log(
-      `${"ID".padEnd(cols.id)} | ` +
-        `${"CustomID".padEnd(cols.customId)} | ` +
-        `${"Name".padEnd(cols.name)} | ` +
-        `${"Description".padEnd(cols.description)} | ` +
-        `${"Status".padEnd(cols.status)} | ` +
-        `${"Comment".padEnd(cols.comment)}`,
+      `${padEnd("ID", cols.id)} | ` +
+        `${padEnd("CustomID", cols.customId)} | ` +
+        `${padEnd("Name", cols.name)} | ` +
+        `${padEnd("Description", cols.description)} | ` +
+        `${padEnd("Status", cols.status)} | ` +
+        `${padEnd("Comment", cols.comment)}`,
     );
 
     // Separator
@@ -51,13 +80,24 @@ export async function show(dbConnection: DatabaseConnection, category: string) {
 
     // Data rows
     for (const task of tasks) {
+      // Truncate values if they exceed column width
+      const id = truncateString(task.id.toString(), cols.id);
+      const customId = truncateString(task.customId || "", cols.customId);
+      const name = truncateString(task.name || "", cols.name);
+      const description = truncateString(
+        task.description || "",
+        cols.description,
+      );
+      const status = truncateString(task.status || "", cols.status);
+      const comment = truncateString(task.comment || "", cols.comment);
+
       console.log(
-        `${task.id.toString().padEnd(cols.id)} | ` +
-          `${(task.customId || "").padEnd(cols.customId)} | ` +
-          `${(task.name || "").padEnd(cols.name)} | ` +
-          `${(task.description || "").padEnd(cols.description)} | ` +
-          `${(task.status || "").padEnd(cols.status)} | ` +
-          `${(task.comment || "").padEnd(cols.comment)}`,
+        `${padEnd(id, cols.id)} | ` +
+          `${padEnd(customId, cols.customId)} | ` +
+          `${padEnd(name, cols.name)} | ` +
+          `${padEnd(description, cols.description)} | ` +
+          `${padEnd(status, cols.status)} | ` +
+          `${padEnd(comment, cols.comment)}`,
       );
     }
   } catch (error) {

@@ -1,0 +1,25 @@
+# システム要件
+
+- `npm install local-task` でnpmプロジェクトにインストールするライブラリ
+- SQLiteでタスクを管理する
+- テーブル
+    - id: PK, int, autoIncrement
+    - customId: text, unique, notNull
+    - category: text, notNull
+    - name: text
+    - description: text
+    - status: text, { enum: ["wip", "done"] }
+    - comment: text
+    - createdAt: integer, { mode: "timestamp" }
+    - updatedAt: integer, { mode: "timestamp" }, 
+- `npm install` 時にプロジェクトルート直下の `tasks.db` を対象にマイグレーションを行う
+- `npm install local-task` で使えるコマンド
+    - `npm local-task add ${category} ${jsonArray}` : JSONArray形式の文字列をパースし、まとめて特定のカテゴリにupsertする
+    - `npm local-task get ${category} ${id or customId}` : 特定のカテゴリからidまたはcustomIdでタスクを検索し、JSONObjectで取得する
+    - `npm local-task search ${category} ${query}` : 特定のカテゴリのcustomId, name, descriptionを${query}でLIKE検索し、JSONArrayで取得する
+    - `npm local-task list ${category}` : 特定のカテゴリのすべてのタスクをJSONArrayで取得する
+    - `npm local-task todo ${category}` : 特定のカテゴリでstatusが `"wip"` のタスクをJSONArrayで取得する
+    - `npm local-task done ${category} ${id} ${comment}` : 特定のカテゴリのタスクをidで指定して、statusを `"done"` にし、commentを書き換える
+    - `npm local-task wip ${category} ${id} ${comment}` : 特定のカテゴリのタスクをidで指定して、statusを `"wip"` にし、commentを書き換える
+    - `npm local-task remove ${category} ${id}` : 特定のカテゴリのタスクをidで指定して、削除する
+    - `npm local-task show ${category}` : 特定のカテゴリのタスク一覧をテーブル形式で表示する

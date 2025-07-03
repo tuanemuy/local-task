@@ -1,18 +1,21 @@
-import { eq, and } from "drizzle-orm";
+import { eq, and, or } from "drizzle-orm";
 import { schema } from "../db";
 import type { DatabaseConnection } from "../utils/db";
-import { validateTaskId, handleCommandError } from "../utils/validation";
+import { handleCommandError } from "../utils/validation";
 
 export async function done(
   dbConnection: DatabaseConnection,
   category: string,
-  id: string,
+  idOrCustomId: string,
   comment?: string,
 ) {
   const { db } = dbConnection;
 
   try {
-    const taskId = validateTaskId(id);
+    // Try to parse as number for id (only positive integers are considered valid IDs)
+    const id = Number.parseInt(idOrCustomId, 10);
+    const isValidNumericId =
+      !Number.isNaN(id) && id > 0 && /^\d+$/.test(idOrCustomId);
 
     const result = await db
       .update(schema.tasks)
@@ -21,15 +24,23 @@ export async function done(
         comment: comment || null,
       })
       .where(
-        and(eq(schema.tasks.category, category), eq(schema.tasks.id, taskId)),
+        and(
+          eq(schema.tasks.category, category),
+          or(
+            isValidNumericId ? eq(schema.tasks.id, id) : undefined,
+            eq(schema.tasks.customId, idOrCustomId),
+          ),
+        ),
       );
 
     if (result.changes === 0) {
-      console.error(`Task with id ${id} not found in category '${category}'`);
-      throw new Error(`Task with id ${id} not found`);
+      console.error(
+        `Task not found with ${isValidNumericId ? "id" : "customId"}: ${idOrCustomId} in category '${category}'`,
+      );
+      throw new Error(`Task not found: ${idOrCustomId}`);
     }
 
-    console.log(`Task ${id} marked as done`);
+    console.log(`Task ${idOrCustomId} marked as done`);
   } catch (error) {
     handleCommandError("mark task as done", error);
   }

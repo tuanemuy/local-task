@@ -33,7 +33,7 @@ async function main() {
     switch (command) {
       case "add": {
         if (params.length !== 2) {
-          console.error("Usage: local-task add <category> <jsonArray>");
+          console.error("Usage: tdlite add <category> <jsonArray>");
           process.exit(1);
         }
         await commands.add(dbConnection, params[0], params[1]);
@@ -42,7 +42,7 @@ async function main() {
 
       case "get": {
         if (params.length !== 2) {
-          console.error("Usage: local-task get <category> <id or customId>");
+          console.error("Usage: tdlite get <category> <id or customId>");
           process.exit(1);
         }
         await commands.get(dbConnection, params[0], params[1]);
@@ -51,7 +51,7 @@ async function main() {
 
       case "search": {
         if (params.length !== 2) {
-          console.error("Usage: local-task search <category> <query>");
+          console.error("Usage: tdlite search <category> <query>");
           process.exit(1);
         }
         await commands.search(dbConnection, params[0], params[1]);
@@ -60,7 +60,7 @@ async function main() {
 
       case "list": {
         if (params.length !== 1) {
-          console.error("Usage: local-task list <category>");
+          console.error("Usage: tdlite list <category>");
           process.exit(1);
         }
         await commands.list(dbConnection, params[0]);
@@ -69,7 +69,7 @@ async function main() {
 
       case "todo": {
         if (params.length !== 1) {
-          console.error("Usage: local-task todo <category>");
+          console.error("Usage: tdlite todo <category>");
           process.exit(1);
         }
         await commands.todo(dbConnection, params[0]);
@@ -78,7 +78,7 @@ async function main() {
 
       case "done": {
         if (params.length < 2 || params.length > 3) {
-          console.error("Usage: local-task done <category> <id> [comment]");
+          console.error("Usage: tdlite done <category> <id> [comment]");
           process.exit(1);
         }
         await commands.done(dbConnection, params[0], params[1], params[2]);
@@ -87,7 +87,7 @@ async function main() {
 
       case "wip": {
         if (params.length < 2 || params.length > 3) {
-          console.error("Usage: local-task wip <category> <id> [comment]");
+          console.error("Usage: tdlite wip <category> <id> [comment]");
           process.exit(1);
         }
         await commands.wip(dbConnection, params[0], params[1], params[2]);
@@ -96,7 +96,7 @@ async function main() {
 
       case "remove": {
         if (params.length !== 2) {
-          console.error("Usage: local-task remove <category> <id>");
+          console.error("Usage: tdlite remove <category> <id>");
           process.exit(1);
         }
         await commands.remove(dbConnection, params[0], params[1]);
@@ -105,7 +105,7 @@ async function main() {
 
       case "show": {
         if (params.length !== 1) {
-          console.error("Usage: local-task show <category>");
+          console.error("Usage: tdlite show <category>");
           process.exit(1);
         }
         await commands.show(dbConnection, params[0]);
@@ -127,10 +127,10 @@ async function main() {
 }
 
 function showHelp() {
-  console.log(`local-task - A task manager for npm projects
+  console.log(`tdlite - A task manager for npm projects
 
 Usage:
-  local-task <command> [arguments]
+  tdlite <command> [arguments]
 
 Commands:
   init [--force]                   Initialize the database (required before first use)
@@ -145,11 +145,11 @@ Commands:
   show <category>                  Display tasks in table format
 
 Examples:
-  local-task init                  # Initialize database
-  local-task add "backend" '[{"customId": "api-001", "name": "Create API" }]'
-  local-task get "backend" "api-001"
-  local-task search "backend" "API"
-  local-task done "backend" 1 "Completed the API implementation"`);
+  tdlite init                  # Initialize database
+  tdlite add "backend" '[{"customId": "api-001", "name": "Create API" }]'
+  tdlite get "backend" "api-001"
+  tdlite search "backend" "API"
+  tdlite done "backend" 1 "Completed the API implementation"`);
 }
 
 main().catch((error) => {

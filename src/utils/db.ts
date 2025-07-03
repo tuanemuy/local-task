@@ -34,7 +34,7 @@ export function getDb(): {
 
   if (!existsSync(dbPath)) {
     console.error(`Database not found at: ${dbPath}`);
-    console.error("Please run 'local-task init' to initialize the database.");
+    console.error("Please run 'tdlite init' to initialize the database.");
     process.exit(1);
   }
 

@@ -39,10 +39,10 @@ describe("init command", () => {
       expect(mockExistsSync).toHaveBeenCalledWith(mockDbPath);
       expect(mockRunMigrations).toHaveBeenCalledWith(mockDbPath);
       expect(consoleSpy).toHaveBeenCalledWith(
-        `Initializing local-task database at: ${mockDbPath}`,
+        `Initializing tdlite database at: ${mockDbPath}`,
       );
       expect(consoleSpy).toHaveBeenCalledWith(
-        "local-task initialized successfully!",
+        "tdlite initialized successfully!",
       );
 
       consoleSpy.mockRestore();
@@ -79,7 +79,7 @@ describe("init command", () => {
       await expect(init()).rejects.toThrow("Migration failed");
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Failed to initialize local-task:",
+        "Failed to initialize tdlite:",
         error,
       );
 
@@ -97,10 +97,10 @@ describe("init command", () => {
 
       expect(mockRunMigrations).toHaveBeenCalledWith(mockDbPath);
       expect(consoleSpy).toHaveBeenCalledWith(
-        `Reinitializing local-task database at: ${mockDbPath}`,
+        `Reinitializing tdlite database at: ${mockDbPath}`,
       );
       expect(consoleSpy).toHaveBeenCalledWith(
-        "local-task reinitialized successfully!",
+        "tdlite reinitialized successfully!",
       );
 
       consoleSpy.mockRestore();
@@ -117,7 +117,7 @@ describe("init command", () => {
       await expect(initForce()).rejects.toThrow("Migration failed");
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Failed to reinitialize local-task:",
+        "Failed to reinitialize tdlite:",
         error,
       );
 

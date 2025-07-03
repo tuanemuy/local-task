@@ -7,6 +7,7 @@ A lightweight CLI task manager for npm projects using SQLite for local storage.
 - **Category-based Organization**: Organize tasks into custom categories
 - **SQLite Storage**: Local database storage with no external dependencies
 - **Flexible Task Management**: Add, update, search, and track task status
+- **Dual ID Support**: Use either numeric IDs or custom string IDs for task operations
 - **JSON Integration**: Import/export tasks in JSON format
 - **Status Tracking**: Mark tasks as work-in-progress (wip) or done
 - **Search Capabilities**: Full-text search across task names and descriptions
@@ -108,21 +109,22 @@ List tasks with "wip" (work-in-progress) status.
 npx local-task todo backend
 ```
 
-#### `done <category> <id> [comment]`
+#### `done <category> <id|customId> [comment]`
 
 Mark a task as completed with optional comment.
 
 ```bash
 npx local-task done backend 1 "API implementation completed"
-npx local-task done backend "api-001"
+npx local-task done backend api-001 "API implementation completed"
 ```
 
-#### `wip <category> <id> [comment]`
+#### `wip <category> <id|customId> [comment]`
 
 Mark a task as work-in-progress with optional comment.
 
 ```bash
 npx local-task wip backend 1 "Starting API development"
+npx local-task wip backend api-001 "Starting API development"
 ```
 
 ### Search and Remove

@@ -248,7 +248,7 @@ describe("wip command", () => {
     it("should fail when task exists but in wrong category", async () => {
       await expect(
         wip(dbConnection, "wrong-category", "1", "Test"),
-      ).rejects.toThrow("Task with id 1 not found");
+      ).rejects.toThrow("Task not found: 1");
     });
   });
 
@@ -256,56 +256,56 @@ describe("wip command", () => {
     it("should throw error for non-existent task ID", async () => {
       await expect(
         wip(dbConnection, "development", "999", "Test"),
-      ).rejects.toThrow("Task with id 999 not found");
+      ).rejects.toThrow("Task not found: 999");
     });
 
     it("should throw error for invalid ID format", async () => {
       await expect(
         wip(dbConnection, "development", "abc", "Test"),
-      ).rejects.toThrow("Invalid task ID");
+      ).rejects.toThrow("Task not found: abc");
     });
 
     it("should throw error for empty ID", async () => {
       await expect(
         wip(dbConnection, "development", "", "Test"),
-      ).rejects.toThrow("Invalid task ID");
+      ).rejects.toThrow("Task not found: ");
     });
 
     it("should throw error for whitespace-only ID", async () => {
       await expect(
         wip(dbConnection, "development", "   ", "Test"),
-      ).rejects.toThrow("Invalid task ID");
+      ).rejects.toThrow("Task not found:    ");
     });
 
     it("should throw error for negative ID", async () => {
       await expect(
         wip(dbConnection, "development", "-1", "Test"),
-      ).rejects.toThrow("Invalid task ID");
+      ).rejects.toThrow("Task not found: -1");
     });
 
     it("should throw error for decimal ID", async () => {
       await expect(
         wip(dbConnection, "development", "1.5", "Test"),
-      ).rejects.toThrow("Invalid task ID");
+      ).rejects.toThrow("Task not found: 1.5");
     });
 
     it("should throw error for ID with leading zeros followed by non-numeric", async () => {
       await expect(
         wip(dbConnection, "development", "01a", "Test"),
-      ).rejects.toThrow("Invalid task ID");
+      ).rejects.toThrow("Task not found: 01a");
     });
 
     it("should throw error for mixed alphanumeric ID", async () => {
       await expect(
         wip(dbConnection, "development", "1a2", "Test"),
-      ).rejects.toThrow("Invalid task ID");
+      ).rejects.toThrow("Task not found: 1a2");
     });
 
     it("should throw error for very large ID", async () => {
       const largeId = "9".repeat(20); // 20 digits
       await expect(
         wip(dbConnection, "development", largeId, "Test"),
-      ).rejects.toThrow(`Task with id ${largeId} not found`);
+      ).rejects.toThrow(`Task not found: ${largeId}`);
     });
   });
 
@@ -313,7 +313,7 @@ describe("wip command", () => {
     it("should handle zero ID", async () => {
       await expect(
         wip(dbConnection, "development", "0", "Test"),
-      ).rejects.toThrow("Invalid task ID");
+      ).rejects.toThrow("Task not found: 0");
     });
 
     it("should handle ID with leading zeros", async () => {
@@ -342,7 +342,7 @@ describe("wip command", () => {
       const maxSafeId = Number.MAX_SAFE_INTEGER.toString();
       await expect(
         wip(dbConnection, "development", maxSafeId, "Test"),
-      ).rejects.toThrow(`Task with id ${maxSafeId} not found`);
+      ).rejects.toThrow(`Task not found: ${maxSafeId}`);
     });
 
     it("should handle comments with special characters", async () => {
@@ -395,19 +395,19 @@ describe("wip command", () => {
     it("should handle scientific notation ID", async () => {
       await expect(
         wip(dbConnection, "development", "1e2", "Test"),
-      ).rejects.toThrow("Invalid task ID");
+      ).rejects.toThrow("Task not found: 1e2");
     });
 
     it("should handle hexadecimal ID", async () => {
       await expect(
         wip(dbConnection, "development", "0xFF", "Test"),
-      ).rejects.toThrow("Invalid task ID");
+      ).rejects.toThrow("Task not found: 0xFF");
     });
 
     it("should handle ID with plus sign", async () => {
       await expect(
         wip(dbConnection, "development", "+1", "Test"),
-      ).rejects.toThrow("Invalid task ID");
+      ).rejects.toThrow("Task not found: +1");
     });
 
     it("should handle undefined comment", async () => {
@@ -429,6 +429,65 @@ describe("wip command", () => {
       expect(task.comment).toBeNull();
 
       consoleSpy.mockRestore();
+    });
+  });
+
+  describe("customId support", () => {
+    it("should mark task as wip using customId", async () => {
+      await expect(
+        wip(
+          dbConnection,
+          "development",
+          "task-001",
+          "Back to work via customId",
+        ),
+      ).resolves.not.toThrow();
+
+      // Verify the task was updated using customId
+      const task = await dbConnection.db
+        .select()
+        .from(schema.tasks)
+        .where(
+          and(
+            eq(schema.tasks.customId, "task-001"),
+            eq(schema.tasks.category, "development"),
+          ),
+        )
+        .then((rows) => rows[0]);
+
+      expect(task.status).toBe("wip");
+      expect(task.comment).toBe("Back to work via customId");
+    });
+
+    it("should work with both numeric customId and regular id", async () => {
+      // Insert a task with numeric customId
+      await dbConnection.db.insert(schema.tasks).values({
+        id: 10,
+        customId: "456",
+        category: "development",
+        name: "Numeric customId task",
+        description: "Task with numeric customId",
+        status: "done",
+      });
+
+      // Should find the task with customId "456" (not id 456)
+      await expect(
+        wip(dbConnection, "development", "456", "Found via customId"),
+      ).resolves.not.toThrow();
+
+      const task = await dbConnection.db
+        .select()
+        .from(schema.tasks)
+        .where(
+          and(
+            eq(schema.tasks.customId, "456"),
+            eq(schema.tasks.category, "development"),
+          ),
+        )
+        .then((rows) => rows[0]);
+
+      expect(task.status).toBe("wip");
+      expect(task.comment).toBe("Found via customId");
     });
   });
 

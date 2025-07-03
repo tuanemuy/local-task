@@ -1,6 +1,6 @@
 {
   "name": "tdlite",
-  "version": "0.1.5",
+  "version": "0.2.1",
   "description": "A task manager for npm projects",
   "type": "module",
   "license": "MIT",

@@ -1,4 +1,4 @@
-# local-task
+# tdlite
 
 A lightweight CLI task manager for npm projects using SQLite for local storage.
 
@@ -7,35 +7,28 @@ A lightweight CLI task manager for npm projects using SQLite for local storage.
 - **Category-based Organization**: Organize tasks into custom categories
 - **SQLite Storage**: Local database storage with no external dependencies
 - **Flexible Task Management**: Add, update, search, and track task status
-- **Dual ID Support**: Use either numeric IDs or custom string IDs for task operations
 - **JSON Integration**: Import/export tasks in JSON format
 - **Status Tracking**: Mark tasks as work-in-progress (wip) or done
 - **Search Capabilities**: Full-text search across task names and descriptions
-
-## Installation
-
-```bash
-npm install local-task
-```
 
 ## Quick Start
 
 1. Initialize the database in your project:
 
 ```bash
-npx local-task init
+npx tdlite init
 ```
 
 2. Add some tasks:
 
 ```bash
-npx local-task add backend '[{"customId": "api-001", "name": "Create user API", "description": "Implement user CRUD operations"}]'
+npx tdlite add backend '[{"customId": "api-001", "name": "Create user API", "description": "Implement user CRUD operations"}]'
 ```
 
 3. List your tasks:
 
 ```bash
-npx local-task show backend
+npx tdlite show backend
 ```
 
 ## Commands
@@ -49,8 +42,8 @@ Initialize the database in your project root. Creates `tasks.db` file.
 - `--force`: Recreate database if it already exists
 
 ```bash
-npx local-task init
-npx local-task init --force
+npx tdlite init
+npx tdlite init --force
 ```
 
 ### Task Management
@@ -60,7 +53,7 @@ npx local-task init --force
 Add or update tasks in a specific category. Tasks are upserted based on `customId`.
 
 ```bash
-npx local-task add backend '[
+npx tdlite add backend '[
   {
     "customId": "api-001",
     "name": "Create user API",
@@ -79,8 +72,8 @@ npx local-task add backend '[
 Retrieve a specific task by ID or custom ID.
 
 ```bash
-npx local-task get backend api-001
-npx local-task get backend 1
+npx tdlite get backend api-001
+npx tdlite get backend 1
 ```
 
 #### `list <category>`
@@ -88,7 +81,7 @@ npx local-task get backend 1
 List all tasks in a category (JSON format).
 
 ```bash
-npx local-task list backend
+npx tdlite list backend
 ```
 
 #### `show <category>`
@@ -96,7 +89,7 @@ npx local-task list backend
 Display tasks in a formatted table.
 
 ```bash
-npx local-task show backend
+npx tdlite show backend
 ```
 
 ### Task Status
@@ -106,7 +99,7 @@ npx local-task show backend
 List tasks with "wip" (work-in-progress) status.
 
 ```bash
-npx local-task todo backend
+npx tdlite todo backend
 ```
 
 #### `done <category> <id|customId> [comment]`
@@ -114,8 +107,8 @@ npx local-task todo backend
 Mark a task as completed with optional comment.
 
 ```bash
-npx local-task done backend 1 "API implementation completed"
-npx local-task done backend api-001 "API implementation completed"
+npx tdlite done backend 1 "API implementation completed"
+npx tdlite done backend api-001 "API implementation completed"
 ```
 
 #### `wip <category> <id|customId> [comment]`
@@ -123,8 +116,8 @@ npx local-task done backend api-001 "API implementation completed"
 Mark a task as work-in-progress with optional comment.
 
 ```bash
-npx local-task wip backend 1 "Starting API development"
-npx local-task wip backend api-001 "Starting API development"
+npx tdlite wip backend 1 "Starting API development"
+npx tdlite wip backend api-001 "Starting API development"
 ```
 
 ### Search and Remove
@@ -134,8 +127,8 @@ npx local-task wip backend api-001 "Starting API development"
 Search tasks by customId, name, or description.
 
 ```bash
-npx local-task search backend API
-npx local-task search backend auth
+npx tdlite search backend API
+npx tdlite search backend auth
 ```
 
 #### `remove <category> <id>`
@@ -143,7 +136,7 @@ npx local-task search backend auth
 Remove a task by ID.
 
 ```bash
-npx local-task remove backend 1
+npx tdlite remove backend 1
 ```
 
 ## Task Structure
@@ -168,33 +161,33 @@ Each task contains the following fields:
 
 ```bash
 # Initialize and add project tasks
-npx local-task init
-npx local-task add frontend '[{"customId": "ui-001", "name": "Design homepage"}]'
-npx local-task add backend '[{"customId": "db-001", "name": "Setup database"}]'
+npx tdlite init
+npx tdlite add frontend '[{"customId": "ui-001", "name": "Design homepage"}]'
+npx tdlite add backend '[{"customId": "db-001", "name": "Setup database"}]'
 ```
 
 ### Development Workflow
 
 ```bash
 # Start working on a task
-npx local-task wip frontend ui-001 "Starting homepage design"
+npx tdlite wip frontend ui-001 "Starting homepage design"
 
 # Check current work
-npx local-task todo frontend
+npx tdlite todo frontend
 
 # Complete a task
-npx local-task done frontend ui-001 "Homepage design completed"
+npx tdlite done frontend ui-001 "Homepage design completed"
 ```
 
 ### Team Coordination
 
 ```bash
 # View all project tasks
-npx local-task show backend
-npx local-task show frontend
+npx tdlite show backend
+npx tdlite show frontend
 
 # Search for specific features
-npx local-task search backend authentication
+npx tdlite search backend authentication
 ```
 
 ## Development

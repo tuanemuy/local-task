@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`local-task` is a TypeScript CLI tool for npm project task management.
+`tdlite` is a TypeScript CLI tool for npm project task management.
 
 ## Development Commands
 

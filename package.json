@@ -1,5 +1,5 @@
 {
-  "name": "local-task",
+  "name": "tdlite",
   "version": "0.1.5",
   "description": "A task manager for npm projects",
   "type": "module",

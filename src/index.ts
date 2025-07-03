@@ -112,6 +112,15 @@ async function main() {
         break;
       }
 
+      case "status": {
+        if (params.length !== 0) {
+          console.error("Usage: tdlite status");
+          process.exit(1);
+        }
+        await commands.status(dbConnection);
+        break;
+      }
+
       default: {
         console.error(`Unknown command: ${command}`);
         showHelp();
@@ -143,6 +152,7 @@ Commands:
   wip <category> <id> [comment]    Mark a task as work in progress
   remove <category> <id>           Remove a task
   show <category>                  Display tasks in table format
+  status                           Display task counts by category and status
 
 Examples:
   tdlite init                  # Initialize database
